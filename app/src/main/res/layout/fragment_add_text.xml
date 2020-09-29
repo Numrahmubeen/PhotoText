@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".AddTextFragment">
+
+    <EditText
+        android:id="@+id/et_addText"
+        android:scrollbars="vertical"
+        android:hint="Enter your text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        />
+    <Button
+        android:layout_width="157dp"
+        android:layout_height="wrap_content"
+        android:text="Choose Color"
+        android:textColor="#fff"
+        android:background="@drawable/custom_button"
+        android:id="@+id/btn_choose_color"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_Fonts"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/rv_Color"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="80dp" />-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000"
+        android:textColor="#fff"
+        android:text="Done"
+        android:id="@+id/btn_Done"/>
+
+
+</LinearLayout>
