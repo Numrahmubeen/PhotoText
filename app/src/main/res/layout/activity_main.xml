@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="#000"
+    android:id="@+id/rootView"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -18,12 +19,32 @@
         app:layout_constraintTop_toTopOf="parent" >
 
     </ja.burhanrashid52.photoeditor.PhotoEditorView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFilterView"
+        android:layout_marginBottom="60dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_main"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/row_filter_view"
+        android:layout_height="wrap_content" />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/rvFilterView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#000"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+<!--         />-->
     <LinearLayout
+        android:id="@+id/ll_buttons"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:padding="10dp"
         android:background="#000"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_main"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
 android:weightSum="4"
@@ -35,6 +56,14 @@ android:weightSum="4"
             android:layout_height="40dp"
             android:src="@drawable/ic_text"
             android:layout_weight="1"
+            />
+        <ImageView
+            android:id="@+id/iv_filter"
+            android:src="@drawable/ic_photo_filter"
+            android:background="#000"
+            android:layout_weight="1"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
             />
         <ImageView
             android:src="@drawable/ic_gallery"
@@ -61,7 +90,6 @@ android:weightSum="4"
             android:layout_width="50dp"
             android:layout_height="40dp"
             />
-
 
     </LinearLayout>
     <ImageView

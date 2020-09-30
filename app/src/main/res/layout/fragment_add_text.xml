@@ -15,25 +15,18 @@
         android:layout_height="wrap_content"
         android:maxHeight="200dp"
         />
-    <Button
-        android:layout_width="157dp"
-        android:layout_height="wrap_content"
-        android:text="Choose Color"
-        android:textColor="#fff"
-        android:background="@drawable/custom_button"
-        android:id="@+id/btn_choose_color"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_Fonts"
         android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/rv_Color"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="80dp" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_Color"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="80dp" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

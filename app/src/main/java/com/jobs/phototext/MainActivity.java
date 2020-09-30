@@ -21,6 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.jobs.phototext.filters.FilterListener;
+import com.jobs.phototext.filters.FilterViewAdapter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,19 +35,21 @@ import java.io.OutputStream;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.PhotoFilter;
 
 
-public class MainActivity extends AppCompatActivity implements AddTextFragmentListener {
+public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener {
 
-    ImageView iv_Save,iv_Gallery,iv_Camera,iv_Text,iv_share;
-
+    ImageView iv_Save,iv_Gallery,iv_Camera,iv_Text,iv_share,iv_filters;
 
     PhotoEditor mPhotoEditor;
     PhotoEditorView mPhotoEditorView;
-    Uri mSaveImageUri;
-    Uri uri;
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
+    RecyclerView rv_Filters;
+    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,18 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         iv_Gallery=findViewById(R.id.iv_gallery);
         iv_Text=findViewById(R.id.iv_Text);
         iv_share=findViewById(R.id.iv_share);
+        iv_filters=findViewById(R.id.iv_filter);
+       rv_Filters=findViewById(R.id.rvFilterView);
+
+
+        LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_Filters.setLayoutManager(llmFilters);
+        rv_Filters.setHasFixedSize(true);
+        rv_Filters.setAdapter(mFilterViewAdapter);
+
+
+
+        final FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
 
         mPhotoEditorView=findViewById(R.id.iv_main);
         mPhotoEditor=new PhotoEditor.Builder(this, mPhotoEditorView)
@@ -61,7 +80,12 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build();
-
+        iv_filters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rv_Filters.setVisibility(View.VISIBLE);
+            }
+        });
         iv_Text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,35 +253,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
         }
 
-
-//            File file = new File(Environment.getExternalStorageDirectory()
-//                    + File.separator + ""
-//                    + System.currentTimeMillis() + ".png");
-//            try {
-//                file.createNewFile();
-//
-//                mPhotoEditor.saveAsFile(file.getAbsolutePath(),  new PhotoEditor.OnSaveListener() {
-//                    @Override
-//                    public void onSuccess(@NonNull String imagePath) {
-//
-//                        mSaveImageUri = Uri.fromFile(new File(imagePath));
-//                       mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
-//                        Toast.makeText(MainActivity.this, "Image Saved Successfully ", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(@NonNull Exception exception) {
-//
-//                        Toast.makeText(MainActivity.this, "Failed to save Image", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//
-//                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-
     }
 
 
@@ -266,4 +261,11 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     public void onAddTextButtonClick(Typeface typeface, String text, int color) {
         mPhotoEditor.addText(typeface,text, color);
     }
+
+    @Override
+    public void onFilterSelected(PhotoFilter photoFilter) {
+        mPhotoEditor.setFilterEffect(photoFilter);
+    }
+
+
 }
