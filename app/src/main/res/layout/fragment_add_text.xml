@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".AddTextFragment">
@@ -14,19 +15,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+
         />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_Fonts"
-        android:layout_marginBottom="16dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:orientation="horizontal"
+       android:weightSum="20"
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_Fonts"
+            android:layout_marginBottom="16dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="19"/>
+        <com.github.veritas1.verticalslidecolorpicker.VerticalSlideColorPicker
+            android:id="@+id/color_picker"
+            android:layout_width="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="100dp"
+            android:layout_weight="1" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_Color"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="80dp" />
+    </LinearLayout>
+
+
+
+
+
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/rv_Color"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="80dp" />-->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

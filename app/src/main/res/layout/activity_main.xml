@@ -30,14 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/row_filter_view"
         android:layout_height="wrap_content" />
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/rvFilterView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="#000"-->
-<!--        android:orientation="horizontal"-->
-<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--         />-->
+
     <LinearLayout
         android:id="@+id/ll_buttons"
         android:layout_width="match_parent"
@@ -51,9 +44,9 @@ android:weightSum="4"
         >
         <ImageView
             android:id="@+id/iv_Text"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:background="#000"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_text"
             android:layout_weight="1"
             />
@@ -62,15 +55,15 @@ android:weightSum="4"
             android:src="@drawable/ic_photo_filter"
             android:background="#000"
             android:layout_weight="1"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
             />
         <ImageView
             android:src="@drawable/ic_gallery"
             android:id="@+id/iv_gallery"
             android:background="#000"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:text="Gallery" />
 
@@ -79,28 +72,46 @@ android:weightSum="4"
             android:src="@drawable/ic_camera"
             android:background="#000"
             android:layout_weight="1"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
        />
         <ImageView
             android:id="@+id/iv_share"
             android:src="@drawable/ic_share"
             android:background="#000"
             android:layout_weight="1"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
             />
 
     </LinearLayout>
     <ImageView
-        android:id="@+id/btn_save"
+        android:id="@+id/iv_save"
         android:layout_width="40dp"
         android:background="#000"
         android:src="@drawable/ic_save"
         android:layout_height="40dp"
-        android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+    <ImageView
+        android:id="@+id/iv_emoji"
+        android:layout_width="40dp"
+        android:background="#000"
+        android:src="@drawable/ic_insert_emoticon"
+        android:layout_height="40dp"
+        android:layout_marginTop="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_save"/>
+    <ImageView
+        android:id="@+id/iv_adjust"
+        android:layout_width="40dp"
+        android:background="#000"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_baseline_tune_24"
+        android:layout_height="40dp"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_emoji"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

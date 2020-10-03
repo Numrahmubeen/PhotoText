@@ -40,6 +40,8 @@ dependencies {
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
     implementation 'com.mindorks.android:prdownloader:0.6.0'
 
+    implementation 'com.github.veritas1:vertical-slide-color-picker:1.0.0'
+    implementation 'info.androidhive:imagefilters:1.0.7'
 
 
 

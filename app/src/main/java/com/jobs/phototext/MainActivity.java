@@ -26,6 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jobs.phototext.filters.FilterListener;
 import com.jobs.phototext.filters.FilterViewAdapter;
+import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,17 +42,30 @@ import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 
 
-public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener {
+public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener ,
+        EmojiBSFragment.EmojiListener,
+EditImageFragmentListener{
 
-    ImageView iv_Save,iv_Gallery,iv_Camera,iv_Text,iv_share,iv_filters;
+    ImageView iv_Save,iv_Gallery,iv_Camera,iv_Text,iv_share,iv_filters,iv_emoji,iv_adjust;
 
     PhotoEditor mPhotoEditor;
     PhotoEditorView mPhotoEditorView;
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
     RecyclerView rv_Filters;
+    private EmojiBSFragment mEmojiBSFragment;
     private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
 
+    EditImageFragment editImageFragment;
+    int brightnessFinal=0;
+    float saturationFinal=1.0f;
+    float contrastFinal=1.0f;
+    Bitmap orignalBitmap,finalBitmap;
+
+static
+{
+    System.loadLibrary("NativeImageProcessor");
+}
 
 
     @Override
@@ -56,12 +73,14 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        iv_Save=findViewById(R.id.btn_save);
+        iv_Save=findViewById(R.id.iv_save);
         iv_Camera=findViewById(R.id.iv_camera);
         iv_Gallery=findViewById(R.id.iv_gallery);
         iv_Text=findViewById(R.id.iv_Text);
         iv_share=findViewById(R.id.iv_share);
         iv_filters=findViewById(R.id.iv_filter);
+        iv_emoji=findViewById(R.id.iv_emoji);
+        iv_adjust=findViewById(R.id.iv_adjust);
        rv_Filters=findViewById(R.id.rvFilterView);
 
 
@@ -70,9 +89,12 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         rv_Filters.setHasFixedSize(true);
         rv_Filters.setAdapter(mFilterViewAdapter);
 
+        mEmojiBSFragment = new EmojiBSFragment();
+        mEmojiBSFragment.setEmojiListener(this);
 
+        editImageFragment=new EditImageFragment();
+        editImageFragment.setListener(this);
 
-        final FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
 
         mPhotoEditorView=findViewById(R.id.iv_main);
         mPhotoEditor=new PhotoEditor.Builder(this, mPhotoEditorView)
@@ -80,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build();
+
         iv_filters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,8 +190,49 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
             }
         });
+        iv_emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
+
+            }
+        });
+        iv_adjust.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetControls();
+                mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
+                    @Override
+                    public void onBitmapReady(Bitmap saveBitmap) {
+                        orignalBitmap=saveBitmap;
+                        finalBitmap=saveBitmap;
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
+              editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
 
 
+
+
+            }
+        });
+
+
+
+    }
+
+    private void resetControls() {
+    if(editImageFragment!=null  )
+    {
+        editImageFragment.resetControls();
+    }
+        brightnessFinal=0;
+        saturationFinal=1.0f;
+        contrastFinal=1.0f;
 
     }
 
@@ -206,6 +270,8 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 case CAMERA_REQUEST:
                     mPhotoEditor.clearAllViews();
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    finalBitmap=photo;
+                    orignalBitmap=photo;
                     mPhotoEditorView.getSource().setImageBitmap(photo);
                     break;
                 case PICK_REQUEST:
@@ -213,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                         mPhotoEditor.clearAllViews();
                         Uri uri = data.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        finalBitmap=bitmap;
+                        orignalBitmap=bitmap;
                         mPhotoEditorView.getSource().setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -268,4 +336,63 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     }
 
 
+    @Override
+    public void onEmojiClick(String emojiUnicode) {
+        mPhotoEditor.addEmoji(emojiUnicode);
+
+    }
+
+    @Override
+    public void onBrightnessChanged(int brightness) {
+        brightnessFinal=brightness;
+        Filter myfilter =new Filter();
+        myfilter.addSubFilter(new BrightnessSubFilter(brightness));
+        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+
+
+    }
+
+    @Override
+    public void onSaturationChanged(float saturation) {
+        saturationFinal=saturation;
+        Filter myfilter=new Filter();
+        myfilter.addSubFilter(new SaturationSubfilter(saturation));
+        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+    }
+
+    @Override
+    public void onContrastChanged(float contrast) {
+     contrastFinal=contrast;
+        Filter myfilter=new Filter();
+        myfilter.addSubFilter(new SaturationSubfilter(contrast));
+        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+    }
+
+    @Override
+    public void onEditStarted() {
+    mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
+        @Override
+        public void onBitmapReady(Bitmap saveBitmap) {
+            finalBitmap=saveBitmap;
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+
+        }
+    });
+    }
+
+    @Override
+    public void onEditCompleted() {
+
+        Bitmap bitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        Filter myFilter=new Filter();
+        myFilter.addSubFilter(new BrightnessSubFilter(brightnessFinal));
+        myFilter.addSubFilter(new SaturationSubfilter(saturationFinal));
+        myFilter.addSubFilter(new ContrastSubFilter(contrastFinal));
+        finalBitmap=myFilter.processFilter(bitmap);
+
+
+    }
 }
