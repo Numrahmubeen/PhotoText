@@ -43,6 +43,4 @@ dependencies {
     implementation 'com.github.veritas1:vertical-slide-color-picker:1.0.0'
     implementation 'info.androidhive:imagefilters:1.0.7'
 
-
-
 }

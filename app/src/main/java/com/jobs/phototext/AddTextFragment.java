@@ -16,24 +16,27 @@ import com.github.veritas1.verticalslidecolorpicker.VerticalSlideColorPicker;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 
-
-public class AddTextFragment extends BottomSheetDialogFragment implements FontAdapter.FontAdapterClickListener{
+public class AddTextFragment extends BottomSheetDialogFragment implements FontAdapter.FontAdapterClickListener {
 
     AddTextFragmentListener listener;
-    EditText et_addText;
-    RecyclerView rv_font,rv_color;
+
+    // TODO: 10/4/2020 second change 
+     EditText et_addText;
+    RecyclerView rv_font, rv_color;
     Button btn_done;
-    Typeface typefaceSelected=Typeface.DEFAULT;
-    int  REQUEST_CODE=11;
-    int colorSelected=Color.parseColor("#000000");
+    Typeface typefaceSelected = Typeface.DEFAULT;
+    int REQUEST_CODE = 11;
+    int colorSelected = Color.parseColor("#000000");
 
 
+    // TODO: 10/4/2020 third change
     public static AddTextFragment getInstance() {
         if(instance==null)
             instance=new AddTextFragment();
         return instance;
     }
 
+    // TODO: 10/4/2020 fourth change
     static AddTextFragment instance;
 
     public void setListener(AddTextFragmentListener listener) {
@@ -48,16 +51,15 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View itemView=inflater.inflate(R.layout.fragment_add_text, container, false);
-        et_addText=itemView.findViewById(R.id.et_addText);
-        btn_done=itemView.findViewById(R.id.btn_Done);
+        View itemView = inflater.inflate(R.layout.fragment_add_text, container, false);
+        et_addText = itemView.findViewById(R.id.et_addText);
+        btn_done = itemView.findViewById(R.id.btn_Done);
 
         final VerticalSlideColorPicker colorPicker = (VerticalSlideColorPicker) itemView.findViewById(R.id.color_picker);
 
@@ -65,27 +67,26 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
             @Override
             public void onColorChange(int selectedColor) {
 
-               if(selectedColor!=0)
-               {
-                   colorSelected=selectedColor;
-               et_addText.setTextColor(selectedColor);
-               }
+                if (selectedColor != 0) {
+                    colorSelected = selectedColor;
+                    et_addText.setTextColor(selectedColor);
+                }
             }
         });
 
-        rv_font=itemView.findViewById(R.id.rv_Fonts);
+        rv_font = itemView.findViewById(R.id.rv_Fonts);
         rv_font.setHasFixedSize(true);
-        rv_font.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
-        FontAdapter adapter=new FontAdapter(getContext(),this);
+        rv_font.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        FontAdapter adapter = new FontAdapter(getContext(), this);
         rv_font.setAdapter(adapter);
 
 
-         btn_done.setOnClickListener(new View.OnClickListener() {
+        btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 getFragmentManager().beginTransaction().remove(AddTextFragment.this).commit();
-                listener.onAddTextButtonClick(typefaceSelected,et_addText.getText().toString(),  colorSelected);
+                listener.onAddTextButtonClick(typefaceSelected, et_addText.getText().toString(), colorSelected);
                 et_addText.setText("");
 
             }
@@ -95,11 +96,9 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
     }
 
     @Override
-        public void OnFontSelected(String fontName) {
-        typefaceSelected= Typeface.createFromAsset(getContext().getAssets(),new StringBuilder("fonts/")
+    public void OnFontSelected(String fontName) {
+        typefaceSelected = Typeface.createFromAsset(getContext().getAssets(), new StringBuilder("fonts/")
                 .append(fontName).toString());
-
-
-        }
+    }
 
 }

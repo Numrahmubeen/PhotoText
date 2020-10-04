@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -38,19 +39,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
+import ja.burhanrashid52.photoeditor.ViewType;
 
 
-public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener ,
-        EmojiBSFragment.EmojiListener,
-EditImageFragmentListener{
+public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener,
+        EmojiBSFragment.EmojiListener, EditImageFragmentListener {
 
-    CardView btn_Gallery,btn_Camera,btn_Text,btn_share,btn_filters,btn_emoji,btn_adjust;
+    CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust;
     ImageView iv_Save;
 
+    private static final String TAG = "MainActivity";
+
+    //TODO: 10/4/2020 fifth change
     PhotoEditor mPhotoEditor;
     PhotoEditorView mPhotoEditorView;
     private static final int CAMERA_REQUEST = 52;
@@ -60,15 +65,14 @@ EditImageFragmentListener{
     EditImageFragment editImageFragment;
     private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
 
-    int brightnessFinal=0;
-    float saturationFinal=1.0f;
-    float contrastFinal=1.0f;
-    Bitmap orignalBitmap,finalBitmap;
+    int brightnessFinal = 0;
+    float saturationFinal = 1.0f;
+    float contrastFinal = 1.0f;
+    Bitmap orignalBitmap, finalBitmap;
 
-static
-{
-    System.loadLibrary("NativeImageProcessor");
-}
+    static {
+        System.loadLibrary("NativeImageProcessor");
+    }
 
 
     @Override
@@ -76,15 +80,15 @@ static
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        iv_Save=findViewById(R.id.iv_save);
-        btn_Camera=findViewById(R.id.btn_camera);
-        btn_Gallery=findViewById(R.id.btn_choose_from_gallery);
-        btn_Text=findViewById(R.id.btn_add_text);
-        btn_share=findViewById(R.id.btn_share);
-        btn_filters=findViewById(R.id.btn_filters_list);
-        btn_emoji=findViewById(R.id.btn_emoji);
-        btn_adjust=findViewById(R.id.btn_adjust);
-       rv_Filters=findViewById(R.id.rvFilterView);
+        iv_Save = findViewById(R.id.iv_save);
+        btn_Camera = findViewById(R.id.btn_camera);
+        btn_Gallery = findViewById(R.id.btn_choose_from_gallery);
+        btn_Text = findViewById(R.id.btn_add_text);
+        btn_share = findViewById(R.id.btn_share);
+        btn_filters = findViewById(R.id.btn_filters_list);
+        btn_emoji = findViewById(R.id.btn_emoji);
+        btn_adjust = findViewById(R.id.btn_adjust);
+        rv_Filters = findViewById(R.id.rvFilterView);
 
 
         LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -95,13 +99,44 @@ static
         mEmojiBSFragment = new EmojiBSFragment();
         mEmojiBSFragment.setEmojiListener(this);
 
-        mPhotoEditorView=findViewById(R.id.iv_main);
-        mPhotoEditor=new PhotoEditor.Builder(this, mPhotoEditorView)
+        mPhotoEditorView = findViewById(R.id.iv_main);
+        mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(true)
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build();
         loadImage();
+
+
+        // TODO: 10/4/2020 yaha sy text change ho skta ha.  on long press tou yaha sy continue kr lain 
+        mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
+            @Override
+            public void onEditTextChangeListener(View rootView, String text, int colorCode) {
+                Toast.makeText(MainActivity.this, "touch", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onEditTextChangeListener: called");
+                mPhotoEditor.editText(rootView, "text changed", colorCode);
+            }
+
+            @Override
+            public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
+                Log.d(TAG, "onAddViewListener: called");
+            }
+
+            @Override
+            public void onRemoveViewListener(int numberOfAddedViews) {
+                Log.d(TAG, "onRemoveViewListener: called");
+            }
+
+            @Override
+            public void onStartViewChangeListener(ViewType viewType) {
+                Log.d(TAG, "onStartViewChangeListener: called");
+            }
+
+            @Override
+            public void onStopViewChangeListener(ViewType viewType) {
+                Log.d(TAG, "onStopViewChangeListener: called");
+            }
+        });
 
         btn_filters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,9 +147,9 @@ static
         btn_Text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddTextFragment addTextFragment=AddTextFragment.getInstance();
+                AddTextFragment addTextFragment = AddTextFragment.getInstance();
                 addTextFragment.setListener(MainActivity.this);
-                addTextFragment.show(getSupportFragmentManager(),addTextFragment.getTag());
+                addTextFragment.show(getSupportFragmentManager(), addTextFragment.getTag());
             }
         });
         iv_Save.setOnClickListener(new View.OnClickListener() {
@@ -125,8 +160,8 @@ static
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(MainActivity.this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,new String[]
-                            {Manifest.permission.WRITE_EXTERNAL_STORAGE},101);
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]
+                            {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
                     return;
                 }
                 // create new Intent
@@ -149,25 +184,25 @@ static
         });
 
 
-       btn_share.setOnClickListener(new View.OnClickListener() {
+        btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // create new Intent
-             mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
-                 @Override
-                 public void onBitmapReady(Bitmap saveBitmap) {
-                     try {
-                         shareImage(saveBitmap);
-                     } catch (IOException e) {
-                         e.printStackTrace();
-                     }
-                 }
+                mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
+                    @Override
+                    public void onBitmapReady(Bitmap saveBitmap) {
+                        try {
+                            shareImage(saveBitmap);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                 @Override
-                 public void onFailure(Exception e) {
+                    @Override
+                    public void onFailure(Exception e) {
 
-                 }
-             });
+                    }
+                });
 
 
             }
@@ -199,43 +234,41 @@ static
 
             }
         });
-       btn_adjust.setOnClickListener(new View.OnClickListener() {
+        btn_adjust.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                editImageFragment=EditImageFragment.getInstance();
+                editImageFragment = EditImageFragment.getInstance();
                 editImageFragment.setListener(MainActivity.this);
-                editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
+                editImageFragment.show(getSupportFragmentManager(), editImageFragment.getTag());
             }
         });
-
 
 
     }
 
     private void loadImage() {
-            orignalBitmap= BitmapFactory.decodeResource(getResources(), R.drawable.main);
-            finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
-            mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
+        orignalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main);
+        finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
     }
 
     private void resetControls() {
-    if(editImageFragment!=null  )
-    {
-        editImageFragment.resetControls();
-    }
-        brightnessFinal=0;
-        saturationFinal=1.0f;
-        contrastFinal=1.0f;
+        if (editImageFragment != null) {
+            editImageFragment.resetControls();
+        }
+        brightnessFinal = 0;
+        saturationFinal = 1.0f;
+        contrastFinal = 1.0f;
 
     }
 
-    private void shareImage( Bitmap bitmap) throws IOException {
+    private void shareImage(Bitmap bitmap) throws IOException {
 
 
         try {
-            File file = new File(getApplicationContext().getExternalCacheDir(), File.separator +getResources().getString(R.string.app_name)+".png");
+            File file = new File(getApplicationContext().getExternalCacheDir(), File.separator + getResources().getString(R.string.app_name) + ".png");
             FileOutputStream fOut = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
@@ -243,7 +276,7 @@ static
             file.setReadable(true, false);
             final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID +".provider", file);
+            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
 
             intent.putExtra(Intent.EXTRA_STREAM, photoURI);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -266,8 +299,8 @@ static
                     mPhotoEditor.clearAllViews();
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
 
-                    orignalBitmap=photo.copy(Bitmap.Config.ARGB_8888,true);
-                    finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+                    orignalBitmap = photo.copy(Bitmap.Config.ARGB_8888, true);
+                    finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
                     mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
                     break;
@@ -277,8 +310,8 @@ static
                         Uri uri = data.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
-                        orignalBitmap=bitmap.copy(Bitmap.Config.ARGB_8888,true);
-                        finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+                        orignalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                        finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
                         mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
@@ -289,52 +322,45 @@ static
             }
         }
     }
+
     @SuppressLint("MissingPermission")
     private void saveImage(Bitmap bitmap) throws IOException {
-                OutputStream outputStream;
+        OutputStream outputStream;
         boolean isSaved;
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q)
-        {
-            ContentResolver resolver=getContentResolver();
-            ContentValues contentValues=new ContentValues();
-            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME,System.currentTimeMillis() + ".png");
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE,"image/png");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContentResolver resolver = getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis() + ".png");
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
             contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
-            Uri uri=resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
-            outputStream=resolver.openOutputStream(uri);
+            Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            outputStream = resolver.openOutputStream(uri);
+        } else {
+            String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+            File file = new File(imagesDir, System.currentTimeMillis() + ".png");
+            outputStream = new FileOutputStream(file);
         }
-        else
-            {
-               String imagesDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-               File file=new File(imagesDir,System.currentTimeMillis()+".png");
-               outputStream=new FileOutputStream(file);
-            }
-        isSaved=bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+        isSaved = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         outputStream.flush();
         outputStream.close();
-        if(isSaved)
-        {
+        if (isSaved) {
             Toast.makeText(this, "Download Successful", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-
     @Override
     public void onAddTextButtonClick(Typeface typeface, String text, int color) {
-        mPhotoEditor.addText(typeface,text, color);
+        mPhotoEditor.addText(typeface, text, color);
     }
 
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
-    resetControls();
-       mPhotoEditor.setFilterEffect(photoFilter);
-
+        resetControls();
+        mPhotoEditor.setFilterEffect(photoFilter);
     }
 
 
@@ -346,28 +372,28 @@ static
 
     @Override
     public void onBrightnessChanged(int brightness) {
-        brightnessFinal=brightness;
-        Filter myfilter =new Filter();
+        brightnessFinal = brightness;
+        Filter myfilter = new Filter();
         myfilter.addSubFilter(new BrightnessSubFilter(brightness));
-        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
 
 
     }
 
     @Override
     public void onSaturationChanged(float saturation) {
-        saturationFinal=saturation;
-        Filter myfilter=new Filter();
+        saturationFinal = saturation;
+        Filter myfilter = new Filter();
         myfilter.addSubFilter(new SaturationSubfilter(saturation));
-        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
     public void onContrastChanged(float contrast) {
-     contrastFinal=contrast;
-        Filter myfilter=new Filter();
+        contrastFinal = contrast;
+        Filter myfilter = new Filter();
         myfilter.addSubFilter(new SaturationSubfilter(contrast));
-        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
@@ -378,14 +404,14 @@ static
     @Override
     public void onEditCompleted() {
 
-        Bitmap bitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        Bitmap bitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
-        Filter myFilter=new Filter();
+        Filter myFilter = new Filter();
         myFilter.addSubFilter(new BrightnessSubFilter(brightnessFinal));
         myFilter.addSubFilter(new SaturationSubfilter(saturationFinal));
         myFilter.addSubFilter(new ContrastSubFilter(contrastFinal));
 
-        finalBitmap=myFilter.processFilter(bitmap);
+        finalBitmap = myFilter.processFilter(bitmap);
 
 
     }

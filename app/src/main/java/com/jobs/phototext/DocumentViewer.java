@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,12 +15,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import static java.lang.System.in;
+
 public class DocumentViewer extends AppCompatActivity {
 
-    Button btn_choose,btn_show;
+    Button btn_choose, btn_show;
     private static final int PICK_PDF_FILE = 2;
     TextView tv;
-    Uri uri=null;
+    Uri uri = null;
     Integer pageNumber = 0;
     PDFView pdf;
 
@@ -28,10 +34,10 @@ public class DocumentViewer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_viewer);
 
-        btn_choose=findViewById(R.id.btn_choose);
-        tv=findViewById(R.id.txt);
-        btn_show=findViewById(R.id.btn_show);
-        pdf=findViewById(R.id.pdfView);
+        btn_choose = findViewById(R.id.btn_choose);
+        tv = findViewById(R.id.txt);
+        btn_show = findViewById(R.id.btn_show);
+        pdf = findViewById(R.id.pdfView);
 
         btn_choose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,8 +53,7 @@ public class DocumentViewer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(uri!=null)
-                {
+                if (uri != null) {
 
                     readTextFromUri(uri);
 
@@ -77,17 +82,48 @@ public class DocumentViewer extends AppCompatActivity {
             // the user selected.
             if (resultData != null) {
                 uri = resultData.getData();
-                if(uri!=null)
-                {
-                    Toast.makeText(this, "Get the file"+uri, Toast.LENGTH_SHORT).show();
-                    tv.setText("Uri is"+uri);
-
+                if (uri != null) {
+                    Toast.makeText(this, "Get the file" + uri, Toast.LENGTH_SHORT).show();
+                    tv.setText("Uri is" + uri);
+                    //extractPdfFile(uri);
                 }
 
             }
         }
     }
 
+    private static final String TAG = "DocumentViewer";
 
+    InputStream inputStream;
 
+//    public void extractPdfFile(final Uri uri) {
+//        //progress_rl.setVisibility(View.VISIBLE);
+//        try {
+//            inputStream = this.getContentResolver().openInputStream(uri);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//
+//                    String fileContent = "";
+//                    StringBuilder builder = new StringBuilder();
+//                    PdfReader reader = new PdfReader(inputStream);
+//                    int n = reader.getNumberOfPages();
+//                    for (int i = 1; i <= n; i++) {
+//                        fileContent = PdfTextExtractor.getTextFromPage(reader, i);
+//                        builder.append(fileContent);
+//                    }
+//                    reader.close();
+//                    Log.d(TAG, "run: " + builder.toString());
+//                } catch (Exception e) {
+//                    Log.d(TAG, "extractPdfFile: " + e.getMessage());
+//                }
+//            }
+//        }).start();
+//
+//    }
 }
