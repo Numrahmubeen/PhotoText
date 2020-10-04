@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -100,7 +101,7 @@ static
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build();
-
+        loadImage();
 
         btn_filters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +202,7 @@ static
        btn_adjust.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadImage();
+
                 editImageFragment=EditImageFragment.getInstance();
                 editImageFragment.setListener(MainActivity.this);
                 editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
@@ -213,19 +214,10 @@ static
     }
 
     private void loadImage() {
-        mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
-            @Override
-            public void onBitmapReady(Bitmap saveBitmap) {
-                orignalBitmap=saveBitmap;
-                finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
-                mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
-            }
+            orignalBitmap= BitmapFactory.decodeResource(getResources(), R.drawable.main);
+            finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+            mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        });
     }
 
     private void resetControls() {
