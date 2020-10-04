@@ -64,9 +64,10 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
         colorPicker.setOnColorChangeListener(new VerticalSlideColorPicker.OnColorChangeListener() {
             @Override
             public void onColorChange(int selectedColor) {
-               colorSelected=selectedColor;
+
                if(selectedColor!=0)
                {
+                   colorSelected=selectedColor;
                et_addText.setTextColor(selectedColor);
                }
             }

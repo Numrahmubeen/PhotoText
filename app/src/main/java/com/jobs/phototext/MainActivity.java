@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -46,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         EmojiBSFragment.EmojiListener,
 EditImageFragmentListener{
 
-    ImageView iv_Save,iv_Gallery,iv_Camera,iv_Text,iv_share,iv_filters,iv_emoji,iv_adjust;
+    CardView btn_Gallery,btn_Camera,btn_Text,btn_share,btn_filters,btn_emoji,btn_adjust;
+    ImageView iv_Save;
 
     PhotoEditor mPhotoEditor;
     PhotoEditorView mPhotoEditorView;
@@ -54,9 +56,9 @@ EditImageFragmentListener{
     private static final int PICK_REQUEST = 53;
     RecyclerView rv_Filters;
     private EmojiBSFragment mEmojiBSFragment;
+    EditImageFragment editImageFragment;
     private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
 
-    EditImageFragment editImageFragment;
     int brightnessFinal=0;
     float saturationFinal=1.0f;
     float contrastFinal=1.0f;
@@ -74,13 +76,13 @@ static
         setContentView(R.layout.activity_main);
 
         iv_Save=findViewById(R.id.iv_save);
-        iv_Camera=findViewById(R.id.iv_camera);
-        iv_Gallery=findViewById(R.id.iv_gallery);
-        iv_Text=findViewById(R.id.iv_Text);
-        iv_share=findViewById(R.id.iv_share);
-        iv_filters=findViewById(R.id.iv_filter);
-        iv_emoji=findViewById(R.id.iv_emoji);
-        iv_adjust=findViewById(R.id.iv_adjust);
+        btn_Camera=findViewById(R.id.btn_camera);
+        btn_Gallery=findViewById(R.id.btn_choose_from_gallery);
+        btn_Text=findViewById(R.id.btn_add_text);
+        btn_share=findViewById(R.id.btn_share);
+        btn_filters=findViewById(R.id.btn_filters_list);
+        btn_emoji=findViewById(R.id.btn_emoji);
+        btn_adjust=findViewById(R.id.btn_adjust);
        rv_Filters=findViewById(R.id.rvFilterView);
 
 
@@ -92,24 +94,21 @@ static
         mEmojiBSFragment = new EmojiBSFragment();
         mEmojiBSFragment.setEmojiListener(this);
 
-        editImageFragment=new EditImageFragment();
-        editImageFragment.setListener(this);
-
-
         mPhotoEditorView=findViewById(R.id.iv_main);
         mPhotoEditor=new PhotoEditor.Builder(this, mPhotoEditorView)
-                .setPinchTextScalable(true) // set flag to make text scalable when pinch
+                .setPinchTextScalable(true)
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build();
 
-        iv_filters.setOnClickListener(new View.OnClickListener() {
+
+        btn_filters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 rv_Filters.setVisibility(View.VISIBLE);
             }
         });
-        iv_Text.setOnClickListener(new View.OnClickListener() {
+        btn_Text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AddTextFragment addTextFragment=AddTextFragment.getInstance();
@@ -149,7 +148,7 @@ static
         });
 
 
-        iv_share.setOnClickListener(new View.OnClickListener() {
+       btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // create new Intent
@@ -172,9 +171,10 @@ static
 
             }
         });
-        iv_Gallery.setOnClickListener(new View.OnClickListener() {
+        btn_Gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetControls();
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -182,47 +182,50 @@ static
 
             }
         });
-        iv_Camera.setOnClickListener(new View.OnClickListener() {
+        btn_Camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetControls();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
             }
         });
-        iv_emoji.setOnClickListener(new View.OnClickListener() {
+        btn_emoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
 
             }
         });
-        iv_adjust.setOnClickListener(new View.OnClickListener() {
+       btn_adjust.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resetControls();
-                mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
-                    @Override
-                    public void onBitmapReady(Bitmap saveBitmap) {
-                        orignalBitmap=saveBitmap;
-                        finalBitmap=saveBitmap;
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-
-                    }
-                });
-              editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
-
-
-
-
+                loadImage();
+                editImageFragment=EditImageFragment.getInstance();
+                editImageFragment.setListener(MainActivity.this);
+                editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
             }
         });
 
 
 
+    }
+
+    private void loadImage() {
+        mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
+            @Override
+            public void onBitmapReady(Bitmap saveBitmap) {
+                orignalBitmap=saveBitmap;
+                finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+                mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 
     private void resetControls() {
@@ -270,18 +273,23 @@ static
                 case CAMERA_REQUEST:
                     mPhotoEditor.clearAllViews();
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
-                    finalBitmap=photo;
-                    orignalBitmap=photo;
-                    mPhotoEditorView.getSource().setImageBitmap(photo);
+
+                    orignalBitmap=photo.copy(Bitmap.Config.ARGB_8888,true);
+                    finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+                    mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
+
                     break;
                 case PICK_REQUEST:
                     try {
                         mPhotoEditor.clearAllViews();
                         Uri uri = data.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                        finalBitmap=bitmap;
-                        orignalBitmap=bitmap;
-                        mPhotoEditorView.getSource().setImageBitmap(bitmap);
+
+                        orignalBitmap=bitmap.copy(Bitmap.Config.ARGB_8888,true);
+                        finalBitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+
+                        mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -332,7 +340,9 @@ static
 
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
-        mPhotoEditor.setFilterEffect(photoFilter);
+    resetControls();
+       mPhotoEditor.setFilterEffect(photoFilter);
+
     }
 
 
@@ -370,27 +380,19 @@ static
 
     @Override
     public void onEditStarted() {
-    mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
-        @Override
-        public void onBitmapReady(Bitmap saveBitmap) {
-            finalBitmap=saveBitmap;
-        }
 
-        @Override
-        public void onFailure(Exception e) {
-
-        }
-    });
     }
 
     @Override
     public void onEditCompleted() {
 
         Bitmap bitmap=orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+
         Filter myFilter=new Filter();
         myFilter.addSubFilter(new BrightnessSubFilter(brightnessFinal));
         myFilter.addSubFilter(new SaturationSubfilter(saturationFinal));
         myFilter.addSubFilter(new ContrastSubFilter(contrastFinal));
+
         finalBitmap=myFilter.processFilter(bitmap);
 
 
