@@ -29,7 +29,7 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
     int colorSelected = Color.parseColor("#000000");
     private String textToBeChanged;
     private int textColortobeChanged;
-    Boolean checkTextChange=false;
+    Boolean checkTextChange = false;
 
 
     // TODO: 10/4/2020 third change
@@ -52,9 +52,9 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
 
     public void changeText(String text,int color)
     {
-        textToBeChanged=text;
-        textColortobeChanged=color;
-        checkTextChange=true;
+        textToBeChanged = text;
+        textColortobeChanged = color;
+        checkTextChange = true;
     }
 
     @Override
@@ -88,8 +88,8 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
         FontAdapter adapter = new FontAdapter(getContext(), this);
         rv_font.setAdapter(adapter);
 
-        if (checkTextChange==true) {
-            colorSelected=textColortobeChanged;
+        if (checkTextChange == true) {
+            colorSelected = textColortobeChanged;
             et_addText.setText(textToBeChanged);
             et_addText.setTextColor(textColortobeChanged);
         }
