@@ -43,4 +43,9 @@ dependencies {
     implementation 'com.github.veritas1:vertical-slide-color-picker:1.0.0'
     implementation 'info.androidhive:imagefilters:1.0.7'
 
+    /*todo multiple screen support library*/
+    //multiple screen size support
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
 }
