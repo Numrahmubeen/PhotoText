@@ -100,7 +100,5 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
         sb_brightness.setProgress(100);
         sb_contrast.setProgress(0);
         sb_saturation.setProgress(10);
-
-
     }
 }

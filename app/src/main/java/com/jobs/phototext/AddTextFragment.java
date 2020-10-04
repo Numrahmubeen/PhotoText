@@ -21,12 +21,15 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
     AddTextFragmentListener listener;
 
     // TODO: 10/4/2020 second change 
-     EditText et_addText;
-    RecyclerView rv_font, rv_color;
+    EditText et_addText;
+    RecyclerView rv_font;
     Button btn_done;
     Typeface typefaceSelected = Typeface.DEFAULT;
     int REQUEST_CODE = 11;
     int colorSelected = Color.parseColor("#000000");
+    private String textToBeChanged;
+    private int textColortobeChanged;
+    Boolean checkTextChange=false;
 
 
     // TODO: 10/4/2020 third change
@@ -47,6 +50,12 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
         // Required empty public constructor
     }
 
+    public void changeText(String text,int color)
+    {
+        textToBeChanged=text;
+        textColortobeChanged=color;
+        checkTextChange=true;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +71,6 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
         btn_done = itemView.findViewById(R.id.btn_Done);
 
         final VerticalSlideColorPicker colorPicker = (VerticalSlideColorPicker) itemView.findViewById(R.id.color_picker);
-
         colorPicker.setOnColorChangeListener(new VerticalSlideColorPicker.OnColorChangeListener() {
             @Override
             public void onColorChange(int selectedColor) {
@@ -80,6 +88,11 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
         FontAdapter adapter = new FontAdapter(getContext(), this);
         rv_font.setAdapter(adapter);
 
+        if (checkTextChange==true) {
+            colorSelected=textColortobeChanged;
+            et_addText.setText(textToBeChanged);
+            et_addText.setTextColor(textColortobeChanged);
+        }
 
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override

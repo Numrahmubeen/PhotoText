@@ -107,14 +107,21 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 .build();
         loadImage();
 
-
         // TODO: 10/4/2020 yaha sy text change ho skta ha.  on long press tou yaha sy continue kr lain 
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
             @Override
             public void onEditTextChangeListener(View rootView, String text, int colorCode) {
-                Toast.makeText(MainActivity.this, "touch", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onEditTextChangeListener: called");
-                mPhotoEditor.editText(rootView, "text changed", colorCode);
+
+                AddTextFragment addTextFragment = new AddTextFragment();
+                addTextFragment.setListener(MainActivity.this);
+                addTextFragment.changeText(text,colorCode);
+                addTextFragment.show(getSupportFragmentManager(), addTextFragment.getTag());
+                rootView.setVisibility(View.INVISIBLE);
+
+
+//                Toast.makeText(MainActivity.this, "touch", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "onEditTextChangeListener: called");
+//                mPhotoEditor.editText(rootView, "text changed", colorCode);
             }
 
             @Override
