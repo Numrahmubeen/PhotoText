@@ -20,6 +20,33 @@
 
     </ja.burhanrashid52.photoeditor.PhotoEditorView>
 
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="30dp"
+       android:id="@+id/ll_opacity"
+       android:visibility="invisible"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:orientation="horizontal"
+       android:weightSum="19"
+       android:background="#ffff"
+       app:layout_constraintBottom_toTopOf="@+id/horizScrollView">
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center_vertical"
+           android:layout_marginLeft="@dimen/_4sdp"
+           android:text="Opacity:"
+           android:textColor="#000"/>
+       <SeekBar
+           android:id="@+id/sb_Opacity"
+           android:layout_width="0dp"
+           android:layout_height="match_parent"
+           android:layout_weight="13"
+           android:rotation="180"
+           android:theme="@style/MySeekBar"
+           android:max="255" />
+   </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFilterView"
         android:layout_width="match_parent"
@@ -38,6 +65,7 @@
         android:fillViewport="true"
         android:measureAllChildren="false"
         android:scrollbars="none"
+        android:id="@+id/horizScrollView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -249,6 +277,41 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="Adjust"
+                        android:textAlignment="center"
+                        android:textColor="#ffff"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btn_control_opacity"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:padding="16dp"
+                app:cardBackgroundColor="#333639"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ic_baseline_blur_on_24" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Opacity"
                         android:textAlignment="center"
                         android:textColor="#ffff"
                         android:textSize="18sp"

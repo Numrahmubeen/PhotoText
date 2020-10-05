@@ -85,8 +85,6 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.Vi
     private void setupFilters() {
         mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
         mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
-        mPairList.add(new Pair<>("filters/brightness.png", PhotoFilter.BRIGHTNESS));
-        mPairList.add(new Pair<>("filters/contrast.png", PhotoFilter.CONTRAST));
         mPairList.add(new Pair<>("filters/documentary.png", PhotoFilter.DOCUMENTARY));
         mPairList.add(new Pair<>("filters/dual_tone.png", PhotoFilter.DUE_TONE));
         mPairList.add(new Pair<>("filters/fill_light.png", PhotoFilter.FILL_LIGHT));
@@ -96,7 +94,6 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.Vi
         mPairList.add(new Pair<>("filters/lomish.png", PhotoFilter.LOMISH));
         mPairList.add(new Pair<>("filters/negative.png", PhotoFilter.NEGATIVE));
         mPairList.add(new Pair<>("filters/posterize.png", PhotoFilter.POSTERIZE));
-        mPairList.add(new Pair<>("filters/saturate.png", PhotoFilter.SATURATE));
         mPairList.add(new Pair<>("filters/sepia.png", PhotoFilter.SEPIA));
         mPairList.add(new Pair<>("filters/sharpen.png", PhotoFilter.SHARPEN));
         mPairList.add(new Pair<>("filters/temprature.png", PhotoFilter.TEMPERATURE));

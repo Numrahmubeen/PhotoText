@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.media.effect.EffectFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
@@ -48,10 +52,11 @@ import ja.burhanrashid52.photoeditor.ViewType;
 
 
 public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener,
-        EmojiBSFragment.EmojiListener, EditImageFragmentListener {
+        EmojiBSFragment.EmojiListener, EditImageFragmentListener, SeekBar.OnSeekBarChangeListener {
 
-    CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust;
+    CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust, btn_opacity;
     ImageView iv_Save;
+    LinearLayout ll_Opacity;
 
     private static final String TAG = "MainActivity";
 
@@ -69,12 +74,14 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     float saturationFinal = 1.0f;
     float contrastFinal = 1.0f;
     Bitmap orignalBitmap, finalBitmap;
+    private SeekBar sb_Opacity;
 
     static {
         System.loadLibrary("NativeImageProcessor");
     }
 
 
+    @SuppressLint("Range")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,9 +96,16 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         btn_emoji = findViewById(R.id.btn_emoji);
         btn_adjust = findViewById(R.id.btn_adjust);
         rv_Filters = findViewById(R.id.rvFilterView);
+        sb_Opacity = findViewById(R.id.sb_Opacity);
+        btn_opacity = findViewById(R.id.btn_control_opacity);
+        ll_Opacity = findViewById(R.id.ll_opacity);
+
+        sb_Opacity.setMax(255);
+        sb_Opacity.setProgress(100);
+        sb_Opacity.setOnSeekBarChangeListener(this);
 
 
-        LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_Filters.setLayoutManager(llmFilters);
         rv_Filters.setHasFixedSize(true);
         rv_Filters.setAdapter(mFilterViewAdapter);
@@ -106,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build();
         loadImage();
+
 
         // TODO: 10/4/2020 yaha sy text change ho skta ha.  on long press tou yaha sy continue kr lain 
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
@@ -145,9 +160,18 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
             }
         });
 
+        btn_opacity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              rv_Filters.setVisibility(View.INVISIBLE);
+              ll_Opacity.setVisibility(View.VISIBLE);
+            }
+        });
+
         btn_filters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ll_Opacity.setVisibility(View.INVISIBLE);
                 rv_Filters.setVisibility(View.VISIBLE);
             }
         });
@@ -162,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         iv_Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //for greater than lolipop versions we need the permissions asked on runtime
                 //so if the permission is not available user will go to the screen to allow storage permission
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(MainActivity.this,
@@ -379,6 +404,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
     @Override
     public void onBrightnessChanged(int brightness) {
+
         brightnessFinal = brightness;
         Filter myfilter = new Filter();
         myfilter.addSubFilter(new BrightnessSubFilter(brightness));
@@ -397,10 +423,14 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
     @Override
     public void onContrastChanged(float contrast) {
-        contrastFinal = contrast;
-        Filter myfilter = new Filter();
-        myfilter.addSubFilter(new SaturationSubfilter(contrast));
-        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
+        CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_CONTRAST)
+                .setParameter("contrast", contrast)
+                .build();
+        mPhotoEditor.setFilterEffect(customEffect);
+//        contrastFinal = contrast;
+//        Filter myfilter = new Filter();
+//        myfilter.addSubFilter(new SaturationSubfilter(contrast));
+//        mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
@@ -420,6 +450,22 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
         finalBitmap = myFilter.processFilter(bitmap);
 
+
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                    mPhotoEditorView.getSource().setImageAlpha(i);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
 }
