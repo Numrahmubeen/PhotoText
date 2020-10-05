@@ -1,7 +1,7 @@
 package com.jobs.phototext.filters;
 
-import ja.burhanrashid52.photoeditor.PhotoFilter;
+import com.zomato.photofilters.imageprocessors.Filter;
 
 public interface FilterListener {
-    void onFilterSelected(PhotoFilter photoFilter);
+    void onFilterSelected(Filter photoFilter);
 }

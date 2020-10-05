@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class EditImageFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     private EditImageFragmentListener listener;
-    SeekBar sb_brightness,sb_contrast,sb_saturation;
+    private SeekBar sb_brightness,sb_contrast,sb_saturation;
     public void setListener(EditImageFragmentListener EditListener) {
        listener =EditListener;
     }
@@ -20,13 +20,10 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
     static EditImageFragment instance;
 
     public static EditImageFragment getInstance() {
-        if(instance==null)
-            instance=new EditImageFragment();
+        if(instance == null)
+            instance = new EditImageFragment();
         return instance;
     }
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,16 +31,15 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View itemView=inflater.inflate(R.layout.fragment_edit_image, container, false);
 
-        sb_brightness=itemView.findViewById(R.id.sb_brightnes);
-        sb_contrast=itemView.findViewById(R.id.sb_contrast);
-        sb_saturation=itemView.findViewById(R.id.sb_saturation);
+        sb_brightness = itemView.findViewById(R.id.sb_brightnes);
+        sb_contrast = itemView.findViewById(R.id.sb_contrast);
+        sb_saturation = itemView.findViewById(R.id.sb_saturation);
 
         sb_brightness.setMax(200);
         sb_brightness.setProgress(100);
@@ -62,21 +58,21 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-        if(listener!=null)
+        if(listener != null)
         {
-            if(seekBar.getId()==R.id.sb_brightnes)
+            if(seekBar.getId() == R.id.sb_brightnes)
             {
                 listener.onBrightnessChanged(progress-100);
             }
-            else if(seekBar.getId()==R.id.sb_contrast)
+            else if(seekBar.getId() == R.id.sb_contrast)
             {
-                progress+=10;
-                float value=.10f*progress;
+                progress += 10;
+                float value = .10f*progress;
                 listener.onContrastChanged(value);
             }
-            else if(seekBar.getId()==R.id.sb_saturation)
+            else if(seekBar.getId() == R.id.sb_saturation)
             {
-                float value=.10f*progress;
+                float value = .10f*progress;
                 listener.onSaturationChanged(value);
             }
         }
@@ -84,14 +80,14 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        if(listener!=null)
+        if(listener != null)
             listener.onEditStarted();
 
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        if (listener!=null)
+        if (listener != null)
             listener.onEditCompleted();
 
     }

@@ -1,108 +1,79 @@
 package com.jobs.phototext.filters;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jobs.phototext.R;
+import com.zomato.photofilters.utils.ThumbnailItem;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import ja.burhanrashid52.photoeditor.PhotoFilter;
+public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.MyViewHolder> {
 
-public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.ViewHolder> {
+    private List<ThumbnailItem> thumbnailItemList;
+    private FilterListener listener;
+    private Context mContext;
+    private int selectedIndex = 0;
 
-    private FilterListener mFilterListener;
-    private List<Pair<String, PhotoFilter>> mPairList = new ArrayList<>();
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        ImageView iv_Thumbnail;
+        TextView tv_FilterName;
 
-    public FilterViewAdapter(FilterListener filterListener) {
-        mFilterListener = filterListener;
-        setupFilters();
+        public MyViewHolder(View view) {
+            super(view);
+         iv_Thumbnail  = view.findViewById(R.id.iv_Thumbnail);
+         tv_FilterName  = view.findViewById(R.id.tv_FilterName);
+        }
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_filter_view, parent, false);
-        return new ViewHolder(view);
+
+    public FilterViewAdapter(Context context, List<ThumbnailItem> thumbnailItemList, FilterListener listener) {
+        mContext = context;
+        this.thumbnailItemList = thumbnailItemList;
+        this.listener = listener;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pair<String, PhotoFilter> filterPair = mPairList.get(position);
-        Bitmap fromAsset = getBitmapFromAsset(holder.itemView.getContext(), filterPair.first);
-        holder.mImageFilterView.setImageBitmap(fromAsset);
-        holder.mTxtFilterName.setText(filterPair.second.name().replace("_", " "));
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.row_filter_view, parent, false);
+
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+        final ThumbnailItem thumbnailItem = thumbnailItemList.get(position);
+
+        holder.iv_Thumbnail.setImageBitmap(thumbnailItem.image);
+
+        holder.iv_Thumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onFilterSelected(thumbnailItem.filter);
+                selectedIndex = position;
+                notifyDataSetChanged();
+            }
+        });
+
+        holder.tv_FilterName.setText(thumbnailItem.filterName);
+
+        if (selectedIndex == position) {
+            holder.tv_FilterName.setTextColor(ContextCompat.getColor(mContext, R.color.filter_label_selected));
+        } else {
+            holder.tv_FilterName.setTextColor(ContextCompat.getColor(mContext, R.color.filter_label_normal));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mPairList.size();
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView mImageFilterView;
-        TextView mTxtFilterName;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            mImageFilterView = itemView.findViewById(R.id.imgFilterView);
-            mTxtFilterName = itemView.findViewById(R.id.txtFilterName);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mFilterListener.onFilterSelected(mPairList.get(getLayoutPosition()).second);
-                }
-            });
-        }
-    }
-
-    private Bitmap getBitmapFromAsset(Context context, String strName) {
-        AssetManager assetManager = context.getAssets();
-        InputStream istr = null;
-        try {
-            istr = assetManager.open(strName);
-            return BitmapFactory.decodeStream(istr);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void setupFilters() {
-        mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
-        mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
-        mPairList.add(new Pair<>("filters/documentary.png", PhotoFilter.DOCUMENTARY));
-        mPairList.add(new Pair<>("filters/dual_tone.png", PhotoFilter.DUE_TONE));
-        mPairList.add(new Pair<>("filters/fill_light.png", PhotoFilter.FILL_LIGHT));
-        mPairList.add(new Pair<>("filters/fish_eye.png", PhotoFilter.FISH_EYE));
-        mPairList.add(new Pair<>("filters/grain.png", PhotoFilter.GRAIN));
-        mPairList.add(new Pair<>("filters/gray_scale.png", PhotoFilter.GRAY_SCALE));
-        mPairList.add(new Pair<>("filters/lomish.png", PhotoFilter.LOMISH));
-        mPairList.add(new Pair<>("filters/negative.png", PhotoFilter.NEGATIVE));
-        mPairList.add(new Pair<>("filters/posterize.png", PhotoFilter.POSTERIZE));
-        mPairList.add(new Pair<>("filters/sepia.png", PhotoFilter.SEPIA));
-        mPairList.add(new Pair<>("filters/sharpen.png", PhotoFilter.SHARPEN));
-        mPairList.add(new Pair<>("filters/temprature.png", PhotoFilter.TEMPERATURE));
-        mPairList.add(new Pair<>("filters/tint.png", PhotoFilter.TINT));
-        mPairList.add(new Pair<>("filters/vignette.png", PhotoFilter.VIGNETTE));
-        mPairList.add(new Pair<>("filters/cross_process.png", PhotoFilter.CROSS_PROCESS));
-        mPairList.add(new Pair<>("filters/b_n_w.png", PhotoFilter.BLACK_WHITE));
-        mPairList.add(new Pair<>("filters/flip_horizental.png", PhotoFilter.FLIP_HORIZONTAL));
-        mPairList.add(new Pair<>("filters/flip_vertical.png", PhotoFilter.FLIP_VERTICAL));
-        mPairList.add(new Pair<>("filters/rotate.png", PhotoFilter.ROTATE));
+        return thumbnailItemList.size();
     }
 }

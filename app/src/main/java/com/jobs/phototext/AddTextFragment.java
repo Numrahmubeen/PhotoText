@@ -21,15 +21,15 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
     AddTextFragmentListener listener;
 
     // TODO: 10/4/2020 second change 
-    EditText et_addText;
-    RecyclerView rv_font;
-    Button btn_done;
-    Typeface typefaceSelected = Typeface.DEFAULT;
+    private EditText et_addText;
+    private RecyclerView rv_font;
+    private Button btn_done;
+    private Typeface typefaceSelected = Typeface.DEFAULT;
     int REQUEST_CODE = 11;
     int colorSelected = Color.parseColor("#000000");
     private String textToBeChanged;
     private int textColortobeChanged;
-    Boolean checkTextChange = false;
+    private Boolean checkTextChange = false;
 
 
     // TODO: 10/4/2020 third change

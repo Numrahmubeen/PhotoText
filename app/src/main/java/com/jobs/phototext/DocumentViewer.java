@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,19 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-
-import static java.lang.System.in;
 
 public class DocumentViewer extends AppCompatActivity {
 
-    Button btn_choose, btn_show;
+    private Button btn_choose, btn_show;
     private static final int PICK_PDF_FILE = 2;
-    TextView tv;
-    Uri uri = null;
-    Integer pageNumber = 0;
-    PDFView pdf;
+    private TextView tv;
+    private Uri uri = null;
+    private Integer pageNumber = 0;
+    private PDFView pdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

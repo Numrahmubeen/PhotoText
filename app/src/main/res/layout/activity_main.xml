@@ -24,11 +24,11 @@
        android:layout_width="match_parent"
        android:layout_height="30dp"
        android:id="@+id/ll_opacity"
-       android:visibility="invisible"
        app:layout_constraintEnd_toEndOf="parent"
        android:orientation="horizontal"
        android:weightSum="19"
        android:background="#ffff"
+       android:visibility="invisible"
        app:layout_constraintBottom_toTopOf="@+id/horizScrollView">
        <TextView
            android:layout_width="wrap_content"
@@ -43,8 +43,8 @@
            android:layout_height="match_parent"
            android:layout_weight="13"
            android:rotation="180"
-           android:theme="@style/MySeekBar"
-           android:max="255" />
+           android:max="255"
+           android:progressBackgroundTint="@color/colorPrimary"/>
    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

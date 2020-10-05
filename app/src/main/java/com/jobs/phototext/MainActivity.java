@@ -32,49 +32,54 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jobs.phototext.filters.FilterListener;
 import com.jobs.phototext.filters.FilterViewAdapter;
+import com.zomato.photofilters.FilterPack;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
+import com.zomato.photofilters.utils.ThumbnailItem;
+import com.zomato.photofilters.utils.ThumbnailsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
-import ja.burhanrashid52.photoeditor.PhotoFilter;
 import ja.burhanrashid52.photoeditor.ViewType;
 
 
 public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener,
         EmojiBSFragment.EmojiListener, EditImageFragmentListener, SeekBar.OnSeekBarChangeListener {
 
-    CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust, btn_opacity;
-    ImageView iv_Save;
-    LinearLayout ll_Opacity;
+    private CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust, btn_opacity;
+    private ImageView iv_Save;
+    private LinearLayout ll_Opacity;
 
     private static final String TAG = "MainActivity";
 
     //TODO: 10/4/2020 fifth change
-    PhotoEditor mPhotoEditor;
-    PhotoEditorView mPhotoEditorView;
+    private PhotoEditor mPhotoEditor;
+    private PhotoEditorView mPhotoEditorView;
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
-    RecyclerView rv_Filters;
+    private RecyclerView rv_Filters;
     private EmojiBSFragment mEmojiBSFragment;
-    EditImageFragment editImageFragment;
-    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
+    private EditImageFragment editImageFragment;
+    private FilterViewAdapter mFilterViewAdapter;
 
-    int brightnessFinal = 0;
-    float saturationFinal = 1.0f;
-    float contrastFinal = 1.0f;
-    Bitmap orignalBitmap, finalBitmap;
+    private int brightnessFinal = 0;
+    private float saturationFinal = 1.0f;
+    private float contrastFinal = 1.0f;
+    private Bitmap  orignalBitmap,finalBitmap,filteredBitmap;
     private SeekBar sb_Opacity;
+    private List<ThumbnailItem> thumbnailItemList;
 
     static {
         System.loadLibrary("NativeImageProcessor");
@@ -104,6 +109,11 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         sb_Opacity.setProgress(100);
         sb_Opacity.setOnSeekBarChangeListener(this);
 
+        thumbnailItemList = new ArrayList<>();
+        mFilterViewAdapter = new FilterViewAdapter(this, thumbnailItemList, this);
+        Bitmap thumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.main);
+        prepareThumbnail(thumbImage);
+
 
         final LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_Filters.setLayoutManager(llmFilters);
@@ -132,11 +142,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 addTextFragment.changeText(text,colorCode);
                 addTextFragment.show(getSupportFragmentManager(), addTextFragment.getTag());
                 rootView.setVisibility(View.INVISIBLE);
-
-
-//                Toast.makeText(MainActivity.this, "touch", Toast.LENGTH_SHORT).show();
-//                Log.d(TAG, "onEditTextChangeListener: called");
-//                mPhotoEditor.editText(rootView, "text changed", colorCode);
             }
 
             @Override
@@ -235,8 +240,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
                     }
                 });
-
-
             }
         });
         btn_Gallery.setOnClickListener(new View.OnClickListener() {
@@ -282,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     private void loadImage() {
         orignalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main);
         finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
         mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
     }
@@ -321,6 +325,33 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
 
     }
+    public void prepareThumbnail(final Bitmap bitmap) {
+
+                ThumbnailsManager.clearThumbs();
+                thumbnailItemList.clear();
+
+                // add normal bitmap first
+                ThumbnailItem thumbnailItem = new ThumbnailItem();
+                thumbnailItem.image = bitmap;
+                thumbnailItem.filterName = getString(R.string.filter_normal);
+                ThumbnailsManager.addThumb(thumbnailItem);
+
+                List<Filter> filters = FilterPack.getFilterPack(getApplicationContext());
+
+                for (Filter filter : filters) {
+                    ThumbnailItem tI = new ThumbnailItem();
+                    tI.image = bitmap;
+                    tI.filter = filter;
+                    tI.filterName = filter.getName();
+                    ThumbnailsManager.addThumb(tI);
+                }
+
+                thumbnailItemList.addAll(ThumbnailsManager.processThumbs(getApplicationContext()));
+                mFilterViewAdapter.notifyDataSetChanged();
+
+            }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -333,7 +364,9 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
                     orignalBitmap = photo.copy(Bitmap.Config.ARGB_8888, true);
                     finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
                     mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
+
 
                     break;
                 case PICK_REQUEST:
@@ -344,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
                         orignalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                         finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                        filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
                         mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
@@ -389,11 +423,11 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         mPhotoEditor.addText(typeface, text, color);
     }
 
-    @Override
-    public void onFilterSelected(PhotoFilter photoFilter) {
-        resetControls();
-        mPhotoEditor.setFilterEffect(photoFilter);
-    }
+//    @Override
+//    public void onFilterSelected(PhotoFilter photoFilter) {
+//        resetControls();
+//        mPhotoEditor.setFilterEffect(photoFilter);
+//    }
 
 
     @Override
@@ -441,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     @Override
     public void onEditCompleted() {
 
-        Bitmap bitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bitmap = filteredBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         Filter myFilter = new Filter();
         myFilter.addSubFilter(new BrightnessSubFilter(brightnessFinal));
@@ -466,6 +500,17 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onFilterSelected(Filter photoFilter) {
+        resetControls();
+        filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        mPhotoEditorView.getSource().setImageBitmap(photoFilter.processFilter(filteredBitmap));
+        finalBitmap = filteredBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+
 
     }
 }
