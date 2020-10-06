@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.effect.EffectFactory;
 import android.net.Uri;
 import android.os.Build;
@@ -46,6 +48,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
@@ -58,8 +61,8 @@ import ja.burhanrashid52.photoeditor.ViewType;
 public class MainActivity extends AppCompatActivity implements AddTextFragmentListener, FilterListener,
         EmojiBSFragment.EmojiListener, EditImageFragmentListener, SeekBar.OnSeekBarChangeListener {
 
-    private CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust, btn_opacity;
-    private ImageView iv_Save,iv_changeBack;
+    private CardView  btn_Text, btn_filters, btn_emoji, btn_adjust, btn_opacity;
+    private ImageView iv_Save, iv_changeBack,btn_Gallery, btn_Camera, btn_share,btn_redo,btn_undo;
     private LinearLayout ll_Opacity;
 
     private static final String TAG = "MainActivity";
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     private int brightnessFinal = 0;
     private float saturationFinal = 1.0f;
     private float contrastFinal = 1.0f;
-    private Bitmap  orignalBitmap,finalBitmap,filteredBitmap;
+    private Bitmap orignalBitmap, finalBitmap, filteredBitmap;
     private SeekBar sb_Opacity;
     private List<ThumbnailItem> thumbnailItemList;
 
@@ -103,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         sb_Opacity = findViewById(R.id.sb_Opacity);
         btn_opacity = findViewById(R.id.btn_control_opacity);
         ll_Opacity = findViewById(R.id.ll_opacity);
-       // iv_changeBack=findViewById(R.id.iv_ChangeBackground);
+        iv_changeBack = findViewById(R.id.iv_ChangeBackground);
+        btn_redo=findViewById(R.id.btn_redo);
+        btn_undo=findViewById(R.id.btn_undo);
 
         sb_Opacity.setMax(255);
         sb_Opacity.setProgress(255);
@@ -131,21 +136,13 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 .build();
         loadImage();
 
-//        v.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ColorStateList colorStateList = ContextCompat.getColorStateList(MainActivity.this, R.color.colorPrimary);
-//                mPhotoEditorView.getSource().setBackgroundTintList(colorStateList);
-//            }
-//        });
-
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
             @Override
             public void onEditTextChangeListener(View rootView, String text, int colorCode) {
 
                 AddTextFragment addTextFragment = new AddTextFragment();
                 addTextFragment.setListener(MainActivity.this);
-                addTextFragment.changeText(text,colorCode);
+                addTextFragment.changeText(text, colorCode);
                 addTextFragment.show(getSupportFragmentManager(), addTextFragment.getTag());
                 rootView.setVisibility(View.INVISIBLE);
             }
@@ -170,17 +167,35 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 Log.d(TAG, "onStopViewChangeListener: called");
             }
         });
-//        iv_changeBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mPhotoEditorView.getSource().setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.white));
-//            }
-//        });
+        btn_undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPhotoEditor.undo();
+            }
+        });
+        btn_redo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPhotoEditor.redo();
+            }
+        });
+        iv_changeBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Random rnd = new Random();
+                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                Drawable abc = getDrawable(R.drawable.white);
+                abc.setTint(color);
+                mPhotoEditorView.getSource().setImageDrawable(abc);
+
+            }
+        });
         btn_opacity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              rv_Filters.setVisibility(View.INVISIBLE);
-              ll_Opacity.setVisibility(View.VISIBLE);
+                rv_Filters.setVisibility(View.INVISIBLE);
+                ll_Opacity.setVisibility(View.VISIBLE);
             }
         });
 
@@ -194,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         btn_Text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AddTextFragment addTextFragment = AddTextFragment.getInstance();
                 addTextFragment.setListener(MainActivity.this);
                 addTextFragment.show(getSupportFragmentManager(), addTextFragment.getTag());
@@ -336,32 +352,32 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
 
     }
+
     public void prepareThumbnail(final Bitmap bitmap) {
 
-                ThumbnailsManager.clearThumbs();
-                thumbnailItemList.clear();
+        ThumbnailsManager.clearThumbs();
+        thumbnailItemList.clear();
 
-                // add normal bitmap first
-                ThumbnailItem thumbnailItem = new ThumbnailItem();
-                thumbnailItem.image = bitmap;
-                thumbnailItem.filterName = getString(R.string.filter_normal);
-                ThumbnailsManager.addThumb(thumbnailItem);
+        // add normal bitmap first
+        ThumbnailItem thumbnailItem = new ThumbnailItem();
+        thumbnailItem.image = bitmap;
+        thumbnailItem.filterName = getString(R.string.filter_normal);
+        ThumbnailsManager.addThumb(thumbnailItem);
 
-                List<Filter> filters = FilterPack.getFilterPack(getApplicationContext());
+        List<Filter> filters = FilterPack.getFilterPack(getApplicationContext());
 
-                for (Filter filter : filters) {
-                    ThumbnailItem tI = new ThumbnailItem();
-                    tI.image = bitmap;
-                    tI.filter = filter;
-                    tI.filterName = filter.getName();
-                    ThumbnailsManager.addThumb(tI);
-                }
+        for (Filter filter : filters) {
+            ThumbnailItem tI = new ThumbnailItem();
+            tI.image = bitmap;
+            tI.filter = filter;
+            tI.filterName = filter.getName();
+            ThumbnailsManager.addThumb(tI);
+        }
 
-                thumbnailItemList.addAll(ThumbnailsManager.processThumbs(getApplicationContext()));
-                mFilterViewAdapter.notifyDataSetChanged();
+        thumbnailItemList.addAll(ThumbnailsManager.processThumbs(getApplicationContext()));
+        mFilterViewAdapter.notifyDataSetChanged();
 
-            }
-
+    }
 
 
     @Override
@@ -375,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
                     orignalBitmap = photo.copy(Bitmap.Config.ARGB_8888, true);
                     finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
-                    filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888,true);
+                    filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
                     mPhotoEditorView.getSource().setImageBitmap(orignalBitmap);
 
 
@@ -501,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                    mPhotoEditorView.getSource().setImageAlpha(i);
+        mPhotoEditorView.getSource().setImageAlpha(i);
     }
 
     @Override
@@ -520,7 +536,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         filteredBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
         mPhotoEditorView.getSource().setImageBitmap(photoFilter.processFilter(filteredBitmap));
         finalBitmap = filteredBitmap.copy(Bitmap.Config.ARGB_8888, true);
-
 
 
     }
