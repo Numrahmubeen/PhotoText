@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         EmojiBSFragment.EmojiListener, EditImageFragmentListener, SeekBar.OnSeekBarChangeListener {
 
     private CardView btn_Gallery, btn_Camera, btn_Text, btn_share, btn_filters, btn_emoji, btn_adjust, btn_opacity;
-    private ImageView iv_Save;
+    private ImageView iv_Save,iv_changeBack;
     private LinearLayout ll_Opacity;
 
     private static final String TAG = "MainActivity";
@@ -104,9 +104,10 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         sb_Opacity = findViewById(R.id.sb_Opacity);
         btn_opacity = findViewById(R.id.btn_control_opacity);
         ll_Opacity = findViewById(R.id.ll_opacity);
+       // iv_changeBack=findViewById(R.id.iv_ChangeBackground);
 
         sb_Opacity.setMax(255);
-        sb_Opacity.setProgress(100);
+        sb_Opacity.setProgress(255);
         sb_Opacity.setOnSeekBarChangeListener(this);
 
         thumbnailItemList = new ArrayList<>();
@@ -131,7 +132,13 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 .build();
         loadImage();
 
-
+//        v.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ColorStateList colorStateList = ContextCompat.getColorStateList(MainActivity.this, R.color.colorPrimary);
+//                mPhotoEditorView.getSource().setBackgroundTintList(colorStateList);
+//            }
+//        });
         // TODO: 10/4/2020 yaha sy text change ho skta ha.  on long press tou yaha sy continue kr lain 
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
             @Override
@@ -164,7 +171,12 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 Log.d(TAG, "onStopViewChangeListener: called");
             }
         });
-
+//        iv_changeBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mPhotoEditorView.getSource().setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.white));
+//            }
+//        });
         btn_opacity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
