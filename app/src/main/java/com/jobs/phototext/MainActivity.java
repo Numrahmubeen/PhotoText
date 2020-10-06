@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
     private static final String TAG = "MainActivity";
 
-    //TODO: 10/4/2020 fifth change
     private PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
     private static final int CAMERA_REQUEST = 52;
