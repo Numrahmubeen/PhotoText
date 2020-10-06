@@ -3,6 +3,6 @@
     <color name="colorPrimary">#000</color>
     <color name="colorPrimaryDark">#000</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="filter_label_selected">#000</color>
+    <color name="filter_label_selected">#228E04</color>
     <color name="filter_label_normal">#fff</color>
 </resources>

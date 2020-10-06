@@ -22,7 +22,7 @@
 
    <LinearLayout
        android:layout_width="match_parent"
-       android:layout_height="30dp"
+       android:layout_height="@dimen/_30sdp"
        android:id="@+id/ll_opacity"
        app:layout_constraintEnd_toEndOf="parent"
        android:orientation="horizontal"
@@ -47,11 +47,12 @@
            android:progressBackgroundTint="@color/colorPrimary"/>
    </LinearLayout>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFilterView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="@dimen/_43sdp"
         android:orientation="horizontal"
         android:visibility="invisible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -77,11 +78,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_choose_from_gallery"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -102,7 +103,7 @@
                         android:text="Gallery"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -112,11 +113,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_camera"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -137,7 +138,7 @@
                         android:text="Camera"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -147,11 +148,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_filters_list"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -172,7 +173,7 @@
                         android:text="Filters"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -182,11 +183,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_add_text"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -207,7 +208,7 @@
                         android:text="Add Text"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -217,11 +218,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_emoji"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -243,7 +244,7 @@
                         android:text="Emoji"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -253,11 +254,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_adjust"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -279,7 +280,7 @@
                         android:text="Adjust"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -289,11 +290,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_control_opacity"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -314,7 +315,7 @@
                         android:text="Opacity"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -324,11 +325,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_share"
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:padding="16dp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="8dp">
+                app:cardElevation="@dimen/_8sdp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -350,7 +351,7 @@
                         android:text="Share"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/_14ssp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -367,8 +368,8 @@
 
     <ImageView
         android:id="@+id/iv_save"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
         android:background="#000"
         android:src="@drawable/ic_save"
         app:layout_constraintEnd_toEndOf="parent"
