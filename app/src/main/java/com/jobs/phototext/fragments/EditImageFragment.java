@@ -1,4 +1,4 @@
-package com.jobs.phototext;
+package com.jobs.phototext.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.jobs.phototext.listener.EditImageFragmentListener;
+import com.jobs.phototext.R;
 
 
 public class EditImageFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
@@ -18,9 +20,12 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
     }
 
     static EditImageFragment instance;
+    static boolean editCheck = false;
 
     public static EditImageFragment getInstance() {
         if(instance == null)
+            instance = new EditImageFragment();
+        else if(editCheck)
             instance = new EditImageFragment();
         return instance;
     }
@@ -36,7 +41,7 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
                              Bundle savedInstanceState) {
 
         View itemView=inflater.inflate(R.layout.fragment_edit_image, container, false);
-
+        editCheck=false;
         sb_brightness = itemView.findViewById(R.id.sb_brightnes);
         sb_contrast = itemView.findViewById(R.id.sb_contrast);
         sb_saturation = itemView.findViewById(R.id.sb_saturation);
@@ -93,8 +98,6 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
     }
     public void resetControls()
     {
-        sb_brightness.setProgress(100);
-        sb_contrast.setProgress(0);
-        sb_saturation.setProgress(10);
+        editCheck=true;
     }
 }

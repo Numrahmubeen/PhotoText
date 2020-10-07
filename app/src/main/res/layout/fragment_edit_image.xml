@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/_16sdp"
     android:paddingRight="@dimen/_16sdp"
-    tools:context=".EditImageFragment">
+    tools:context=".fragments.EditImageFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

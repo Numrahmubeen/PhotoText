@@ -1,4 +1,4 @@
-package com.jobs.phototext.filters;
+package com.jobs.phototext.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jobs.phototext.R;
+import com.jobs.phototext.listener.FilterListener;
 import com.zomato.photofilters.utils.ThumbnailItem;
 
 import java.util.List;

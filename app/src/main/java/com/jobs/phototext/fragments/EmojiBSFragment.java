@@ -1,4 +1,4 @@
-package com.jobs.phototext;
+package com.jobs.phototext.fragments;
 
 import android.app.Dialog;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.jobs.phototext.R;
 
 import java.util.ArrayList;
 

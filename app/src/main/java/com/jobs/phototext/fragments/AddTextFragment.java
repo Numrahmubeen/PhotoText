@@ -1,4 +1,4 @@
-package com.jobs.phototext;
+package com.jobs.phototext.fragments;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.veritas1.verticalslidecolorpicker.VerticalSlideColorPicker;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.jobs.phototext.listener.AddTextFragmentListener;
+import com.jobs.phototext.R;
+import com.jobs.phototext.adapter.FontAdapter;
 
 
 public class AddTextFragment extends BottomSheetDialogFragment implements FontAdapter.FontAdapterClickListener {

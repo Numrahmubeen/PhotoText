@@ -1,4 +1,4 @@
-package com.jobs.phototext;
+package com.jobs.phototext.listener;
 
 public interface EditImageFragmentListener {
     void onBrightnessChanged(int brightness);

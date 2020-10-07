@@ -32,8 +32,13 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jobs.phototext.filters.FilterListener;
-import com.jobs.phototext.filters.FilterViewAdapter;
+import com.jobs.phototext.listener.AddTextFragmentListener;
+import com.jobs.phototext.listener.EditImageFragmentListener;
+import com.jobs.phototext.listener.FilterListener;
+import com.jobs.phototext.adapter.FilterViewAdapter;
+import com.jobs.phototext.fragments.AddTextFragment;
+import com.jobs.phototext.fragments.EditImageFragment;
+import com.jobs.phototext.fragments.EmojiBSFragment;
 import com.zomato.photofilters.FilterPack;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         EmojiBSFragment.EmojiListener, EditImageFragmentListener, SeekBar.OnSeekBarChangeListener {
 
     private CardView  btn_Text, btn_filters, btn_emoji, btn_adjust, btn_opacity;
-    private ImageView iv_Save, iv_changeBack,btn_Gallery, btn_Camera, btn_share,btn_redo,btn_undo;
+    private ImageView iv_Save, iv_changeBack,btn_Gallery, btn_Camera, btn_share;
     private LinearLayout ll_Opacity;
 
     private static final String TAG = "MainActivity";
@@ -107,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         btn_opacity = findViewById(R.id.btn_control_opacity);
         ll_Opacity = findViewById(R.id.ll_opacity);
         iv_changeBack = findViewById(R.id.iv_ChangeBackground);
-        btn_redo=findViewById(R.id.btn_redo);
-        btn_undo=findViewById(R.id.btn_undo);
 
         sb_Opacity.setMax(255);
         sb_Opacity.setProgress(255);
@@ -167,18 +170,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 Log.d(TAG, "onStopViewChangeListener: called");
             }
         });
-        btn_undo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPhotoEditor.undo();
-            }
-        });
-        btn_redo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPhotoEditor.redo();
-            }
-        });
         iv_changeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -194,16 +185,25 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         btn_opacity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 rv_Filters.setVisibility(View.INVISIBLE);
-                ll_Opacity.setVisibility(View.VISIBLE);
+                if(ll_Opacity.getVisibility()==View.VISIBLE)
+                    ll_Opacity.setVisibility(View.INVISIBLE);
+                else
+                    ll_Opacity.setVisibility(View.VISIBLE);
+
             }
         });
 
         btn_filters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(rv_Filters.getVisibility()==View.VISIBLE)
+                    rv_Filters.setVisibility(View.INVISIBLE);
+                else {
                 ll_Opacity.setVisibility(View.INVISIBLE);
                 rv_Filters.setVisibility(View.VISIBLE);
+                }
             }
         });
         btn_Text.setOnClickListener(new View.OnClickListener() {
@@ -246,8 +246,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
                 });
             }
         });
-
-
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,6 +270,15 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         btn_Gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //for greater than lolipop versions we need the permissions asked on runtime
+                //so if the permission is not available user will go to the screen to allow storage permission
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]
+                            {Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+                    return;
+                }
                 resetControls();
                 Intent intent = new Intent();
                 intent.setType("image/*");
@@ -308,7 +315,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
 
 
     }
-
     private void loadImage() {
         orignalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main);
         finalBitmap = orignalBitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -324,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         brightnessFinal = 0;
         saturationFinal = 1.0f;
         contrastFinal = 1.0f;
-
     }
 
     private void shareImage(Bitmap bitmap) throws IOException {
@@ -450,13 +455,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         mPhotoEditor.addText(typeface, text, color);
     }
 
-//    @Override
-//    public void onFilterSelected(PhotoFilter photoFilter) {
-//        resetControls();
-//        mPhotoEditor.setFilterEffect(photoFilter);
-//    }
-
-
     @Override
     public void onEmojiClick(String emojiUnicode) {
         mPhotoEditor.addEmoji(emojiUnicode);
@@ -470,8 +468,6 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         Filter myfilter = new Filter();
         myfilter.addSubFilter(new BrightnessSubFilter(brightness));
         mPhotoEditorView.getSource().setImageBitmap(myfilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
-
-
     }
 
     @Override

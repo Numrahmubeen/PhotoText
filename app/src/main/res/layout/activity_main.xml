@@ -29,7 +29,7 @@
        android:background="#90000000"
        android:visibility="invisible"
        app:backgroundTint="@color/colorPrimary"
-       app:layout_constraintBottom_toTopOf="@+id/ll_undoRedo"
+       app:layout_constraintBottom_toTopOf="@+id/rl_undoRedo"
        app:layout_constraintEnd_toEndOf="parent">
        <TextView
            android:layout_width="wrap_content"
@@ -50,12 +50,23 @@
            android:progressBackgroundTint="#fff"/>
 
    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFilterView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#7000"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/rl_undoRedo"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/row_filter_view" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_20sdp"
-        android:id="@+id/ll_undoRedo"
+        android:id="@+id/rl_undoRedo"
         android:orientation="horizontal"
-        android:background="#000"
+        android:background="#7000"
         app:layout_constraintBottom_toTopOf="@+id/horizScrollView"
         app:layout_constraintEnd_toEndOf="parent">
         <ImageView
@@ -73,42 +84,32 @@
             android:layout_toRightOf="@+id/btn_choose_from_gallery"
             android:src="@drawable/ic_camera" />
         <ImageView
-            android:id="@+id/btn_share"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_share"
+            android:id="@+id/iv_ChangeBackground"
+            android:src="@drawable/ic_baseline_color_lens_24"
             />
 
         <ImageView
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            android:id="@+id/btn_undo"
-            android:layout_toLeftOf="@+id/btn_redo"
-            android:src="@drawable/ic_baseline_undo_24"
+            android:id="@+id/iv_save"
+            android:src="@drawable/ic_save"
+            android:layout_toLeftOf="@+id/btn_share"
             android:layout_marginRight="@dimen/_20sdp"
           />
         <ImageView
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            android:id="@+id/btn_redo"
+            android:id="@+id/btn_share"
+            android:src="@drawable/ic_share"
             android:layout_marginRight="@dimen/_20sdp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_baseline_redo_24"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFilterView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_63sdp"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_main"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/row_filter_view" />
+
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -132,7 +133,8 @@
                 android:layout_height="@dimen/_40sdp"
                 android:padding="@dimen/_16sdp"
                 app:cardBackgroundColor="#333639"
-                app:cardElevation="@dimen/_8sdp">
+                app:cardElevation="@dimen/_8sdp"
+                >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -153,8 +155,7 @@
                         android:text="Filters"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_10ssp" />
 
                 </LinearLayout>
 
@@ -188,8 +189,7 @@
                         android:text="Add Text"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_10ssp" />
 
                 </LinearLayout>
 
@@ -224,8 +224,7 @@
                         android:text="Emoji"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_10ssp" />
 
                 </LinearLayout>
 
@@ -260,8 +259,7 @@
                         android:text="Adjust"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_10ssp" />
 
                 </LinearLayout>
 
@@ -295,11 +293,9 @@
                         android:text="Opacity"
                         android:textAlignment="center"
                         android:textColor="#ffff"
-                        android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_10ssp" />
 
                 </LinearLayout>
-
 
             </androidx.cardview.widget.CardView>
 
@@ -308,24 +304,26 @@
 
     </HorizontalScrollView>
 
-
-    <ImageView
-        android:id="@+id/iv_save"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:background="#000"
-        android:src="@drawable/ic_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ImageView
-        android:id="@+id/iv_ChangeBackground"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:background="#000"
-        android:src="@drawable/ic_baseline_color_lens_24"
-        android:layout_marginTop="@dimen/_20sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_save" />
-
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_save"-->
+<!--        android:src="@drawable/ic_save"-->
+<!--        android:layout_width="@dimen/_30sdp"-->
+<!--        android:layout_height="@dimen/_30sdp"-->
+<!--        android:background="@drawable/circle"-->
+<!--        android:backgroundTint="#333639"-->
+<!--        android:layout_marginTop="@dimen/_20sdp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/btn_share"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--         />-->
+<!--    <ImageView-->
+<!--        android:layout_width="@dimen/_30sdp"-->
+<!--        android:layout_height="@dimen/_30sdp"-->
+<!--        android:background="@drawable/circle"-->
+<!--        android:backgroundTint="#333639"-->
+<!--        android:id="@+id/btn_share"-->
+<!--        android:src="@drawable/ic_share"-->
+<!--        android:layout_marginTop="@dimen/_20sdp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

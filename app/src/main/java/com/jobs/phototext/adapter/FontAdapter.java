@@ -1,4 +1,4 @@
-package com.jobs.phototext;
+package com.jobs.phototext.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.jobs.phototext.R;
 
 import java.util.ArrayList;
 import java.util.List;
