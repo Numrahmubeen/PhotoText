@@ -102,7 +102,9 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
             public void onClick(View view) {
 
                 getFragmentManager().beginTransaction().remove(AddTextFragment.this).commit();
+                if(!et_addText.getText().toString().equals("")){
                 listener.onAddTextButtonClick(typefaceSelected, et_addText.getText().toString(), colorSelected);
+                }
                 et_addText.setText("");
 
             }

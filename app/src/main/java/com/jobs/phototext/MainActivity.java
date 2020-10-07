@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
         ll_Opacity = findViewById(R.id.ll_opacity);
         iv_changeBack = findViewById(R.id.iv_ChangeBackground);
 
+
         sb_Opacity.setMax(255);
         sb_Opacity.setProgress(255);
         sb_Opacity.setOnSeekBarChangeListener(this);
@@ -453,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements AddTextFragmentLi
     @Override
     public void onAddTextButtonClick(Typeface typeface, String text, int color) {
         mPhotoEditor.addText(typeface, text, color);
+
     }
 
     @Override
