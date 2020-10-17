@@ -28,8 +28,8 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
     private RecyclerView rv_font;
     private Button btn_done;
     private Typeface typefaceSelected = Typeface.DEFAULT;
-    int REQUEST_CODE = 11;
-    int colorSelected = Color.parseColor("#000000");
+    private int REQUEST_CODE = 11;
+    private int colorSelected = Color.parseColor("#000000");
     private String textToBeChanged;
     private int textColortobeChanged;
     private Boolean checkTextChange = false;
@@ -37,8 +37,8 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
 
     // TODO: 10/4/2020 third change
     public static AddTextFragment getInstance() {
-        if(instance==null)
-            instance=new AddTextFragment();
+        if (instance == null)
+            instance = new AddTextFragment();
         return instance;
     }
 
@@ -53,8 +53,7 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
         // Required empty public constructor
     }
 
-    public void changeText(String text,int color)
-    {
+    public void changeText(String text, int color) {
         textToBeChanged = text;
         textColortobeChanged = color;
         checkTextChange = true;
@@ -102,8 +101,8 @@ public class AddTextFragment extends BottomSheetDialogFragment implements FontAd
             public void onClick(View view) {
 
                 getFragmentManager().beginTransaction().remove(AddTextFragment.this).commit();
-                if(!et_addText.getText().toString().equals("")){
-                listener.onAddTextButtonClick(typefaceSelected, et_addText.getText().toString(), colorSelected);
+                if (!et_addText.getText().toString().equals("")) {
+                    listener.onAddTextButtonClick(typefaceSelected, et_addText.getText().toString(), colorSelected);
                 }
                 et_addText.setText("");
 
